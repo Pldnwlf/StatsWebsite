@@ -1,0 +1,51 @@
+# ASP.NET Core API
+# .NET Core / ASP.NET Core build artifacts
+bin/
+obj/
+
+# User-specific files
+.vs/
+.idea/
+.vscode/
+
+# ASP.NET Core development server logs
+ApplicationInsights.config
+appsettings.Development.json
+
+# Microsoft Azure Web Apps
+# The following folder is used by Azure to store deployment files
+.Docker/
+
+# ASP.NET Core - Ignore JetBrains Rider files
+.idea/
+
+# Node modules and build output for Next.js
+node_modules/
+.next/
+out/
+
+# npm log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Next.js specific
+.next/
+*.log
+*.csv
+
+# Log files
+*.log
+
+# Build output
+dist/
+build/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# dotenv environment variables file
+.env
+.env.local
+.env.*.local
