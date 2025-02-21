@@ -1,6 +1,0 @@
-@HGLaborBackendAPI_HostAddress = http://localhost:5188
-
-GET {{HGLaborBackendAPI_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
