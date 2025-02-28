@@ -1,0 +1,68 @@
+trigger:
+- dev
+
+pool:
+  name: 'RAP-BUILD-LNX03'
+  demands: 'agent.os -equals Linux'
+
+variables:
+  imageName: 'tadingtes/myaspnetapp'
+  dockerRegistryServiceConnection: 'tadingtes'
+  tag: 'latest'
+  artifactName: 'myaspnetwebapp'
+
+stages:
+- stage: Build
+  displayName: 'Build Stage'
+  jobs:
+  - job: Build
+    steps:
+    - task: UseDotNet@2
+      inputs:
+        packageType: 'sdk'
+        version: '6.x'
+
+    - script: |
+        dotnet restore
+        dotnet publish -c Release -o $(Build.ArtifactStagingDirectory)
+      displayName: 'Build ASP.NET App'
+      workingDirectory: 'GerichtAPI/'
+
+    - task: PublishBuildArtifacts@1
+      inputs:
+        pathToPublish: '$(Build.ArtifactStagingDirectory)'
+        artifactName: $(artifactName)
+
+    - script: |
+        ls $(Build.ArtifactStagingDirectory) -lah
+      displayName: 'displayartifact'
+
+
+
+
+- stage: DockerBuildAndPush
+  displayName: 'Docker Build and Push Stage'
+  jobs:
+  - job: Docker
+    steps:
+    - checkout: self
+    - task: DownloadBuildArtifacts@0
+      inputs:
+        buildType: 'current'
+        artifactName: $(artifactName)
+        downloadPath: '$(Build.ArtifactStagingDirectory)'
+
+    - task: Docker@2
+      inputs:
+        command: 'build'
+        dockerfile: 'GerichtAPI/Dockerfile'
+        buildContext: '$(Build.ArtifactStagingDirectory)/$(artifactName)'
+        repository: '$(imageName)'
+        tags: '$(tag)'
+
+    - task: Docker@2
+      inputs:
+        command: 'push'
+        repository: '$(imageName)'
+        tags: '$(tag)'
+        containerRegistry: '$(dockerRegistryServiceConnection)'
